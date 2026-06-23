@@ -1,1 +1,624 @@
+/* ═══════════════════════════════════════════════════════════════
+   ExcellentWorld — style.css
+   Стек: чёрный герой → белый донат, неоновые карточки, Space Grotesk
+   ═══════════════════════════════════════════════════════════════ */
+
+/* ── CSS-переменные ── */
+:root {
+  --black:        #000000;
+  --white:        #ffffff;
+  --grey-dim:     #888888;
+  --grey-light:   #cccccc;
+
+  /* Цвета карточек */
+  --dragon-from:  #b14aed;
+  --dragon-to:    #ff6eb4;
+  --dragon-glow:  rgba(177, 74, 237, 0.6);
+
+  --imp-from:     #e8315b;
+  --imp-to:       #ff7eb3;
+  --imp-glow:     rgba(232, 49, 91, 0.6);
+
+  --lord-from:    #c8a84b;
+  --lord-to:      #f5e6b0;
+  --lord-glow:    rgba(200, 168, 75, 0.55);
+
+  --miner-from:   #1e7fd4;
+  --miner-to:     #5ec8ff;
+  --miner-glow:   rgba(30, 127, 212, 0.6);
+
+  --font-display: 'Space Grotesk', sans-serif;
+  --font-body:    'Inter', sans-serif;
+
+  --transition:   0.4s cubic-bezier(0.25, 0.8, 0.25, 1);
+}
+
+/* ── Сброс и база ── */
+*, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
+
+html { scroll-behavior: smooth; }
+
+body {
+  font-family: var(--font-body);
+  background: var(--black);
+  color: var(--white);
+  line-height: 1.6;
+  min-height: 100vh;
+}
+
+/* ═══════════════════════════════════════════
+   ГЕРОЙ
+═══════════════════════════════════════════ */
+.hero {
+  position: relative;
+  min-height: 100vh;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+  background: var(--black);
+  overflow: hidden;
+  /* Лёгкая текстура для глубины */
+  background-image: radial-gradient(ellipse 80% 60% at 50% 0%, #111 0%, #000 100%);
+}
+
+.hero__content {
+  text-align: center;
+  user-select: none;
+}
+
+/* ── Название — главный элемент ── */
+.hero__title {
+  font-family: var(--font-display);
+  font-size: clamp(3.5rem, 12vw, 10rem);
+  font-weight: 800;
+  letter-spacing: -0.03em;
+  line-height: 1;
+  cursor: default;
+  position: relative;
+  display: inline-block;
+}
+
+/* Wrapper позволяет делать crossfade между двумя текстами */
+.hero__title-text {
+  display: block;
+  transition: opacity 0.35s ease, transform 0.35s ease;
+}
+
+/* При ховере на заголовке — fade out текущего и fade in IP */
+.hero__title:hover .hero__title-text {
+  opacity: 0;
+  transform: translateY(-8px);
+}
+
+/* Псевдоэлемент с IP-адресом появляется из-под */
+.hero__title::after {
+  content: attr(data-hover);
+  position: absolute;
+  inset: 0;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  font-size: clamp(1.8rem, 5.5vw, 4.8rem); /* IP длиннее, поэтому чуть меньше */
+  letter-spacing: 0.01em;
+  font-weight: 700;
+  color: var(--grey-light);
+  opacity: 0;
+  transform: translateY(8px);
+  transition: opacity 0.35s ease, transform 0.35s ease;
+  white-space: nowrap;
+}
+
+.hero__title:hover::after {
+  opacity: 1;
+  transform: translateY(0);
+}
+
+/* ── Подзаголовок ── */
+.hero__sub {
+  font-family: var(--font-display);
+  font-size: clamp(1rem, 2.5vw, 1.5rem);
+  font-weight: 400;
+  color: var(--grey-dim);
+  margin-top: 1.25rem;
+  letter-spacing: 0.05em;
+  text-transform: uppercase;
+}
+
+/* ── Подсказка ── */
+.hero__hint {
+  display: inline-block;
+  margin-top: 2rem;
+  font-size: 0.8rem;
+  color: #444;
+  letter-spacing: 0.1em;
+  text-transform: uppercase;
+  transition: opacity 0.6s ease;
+}
+
+.hero__hint.hidden { opacity: 0; pointer-events: none; }
+
+/* ── Анимированная стрелка вниз ── */
+.hero__scroll-arrow {
+  position: absolute;
+  bottom: 2rem;
+  left: 50%;
+  transform: translateX(-50%);
+  width: 2rem;
+  height: 2rem;
+  color: #333;
+  animation: bounceDown 2s ease-in-out infinite;
+  cursor: pointer;
+  transition: color 0.3s;
+}
+
+.hero__scroll-arrow:hover { color: var(--grey-dim); }
+
+@keyframes bounceDown {
+  0%, 100% { transform: translateX(-50%) translateY(0); }
+  50%       { transform: translateX(-50%) translateY(8px); }
+}
+
+/* ═══════════════════════════════════════════
+   СЕКЦИЯ ДОНАТА
+   Фон плавно переходит из чёрного в белый через JS (см. main.js)
+═══════════════════════════════════════════ */
+.donate {
+  min-height: 100vh;
+  background: var(--white);   /* управляется скроллом через JS */
+  padding: 6rem 1.5rem 5rem;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+}
+
+.donate__inner {
+  max-width: 1120px;
+  width: 100%;
+  text-align: center;
+}
+
+.donate__heading {
+  font-family: var(--font-display);
+  font-size: clamp(2rem, 5vw, 3.5rem);
+  font-weight: 800;
+  color: var(--black);
+  letter-spacing: -0.03em;
+  margin-bottom: 0.75rem;
+}
+
+.donate__sub {
+  font-size: 1.1rem;
+  color: #666;
+  margin-bottom: 3.5rem;
+}
+
+/* ── Сетка карточек ── */
+.cards {
+  display: grid;
+  grid-template-columns: repeat(auto-fit, minmax(230px, 1fr));
+  gap: 1.75rem;
+}
+
+/* ── Базовая карточка ── */
+.card {
+  position: relative;
+  border-radius: 1.25rem;
+  padding: 2rem 1.5rem 2rem;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  text-align: center;
+  overflow: hidden;
+  cursor: pointer;
+  transition:
+    transform var(--transition),
+    box-shadow var(--transition);
+  /* Белый нейтральный фон, цвет даёт псевдоэлемент */
+  background: #fff;
+  border: 1px solid #e5e5e5;
+}
+
+/* Скрытый слой свечения — раскрывается при ховере */
+.card__glow {
+  position: absolute;
+  inset: 0;
+  border-radius: inherit;
+  opacity: 0;
+  transition: opacity var(--transition);
+  pointer-events: none;
+}
+
+.card:hover { transform: scale(1.045) translateY(-6px); }
+
+/* Свечение при ховере управляется через конкретный класс карточки */
+.card:hover .card__glow { opacity: 1; }
+
+.card__icon {
+  font-size: 2.8rem;
+  margin-bottom: 0.75rem;
+  line-height: 1;
+  position: relative; /* поверх glow */
+}
+
+.card__title {
+  font-family: var(--font-display);
+  font-size: 1.5rem;
+  font-weight: 800;
+  letter-spacing: -0.02em;
+  margin-bottom: 0.6rem;
+  position: relative;
+}
+
+.card__desc {
+  font-size: 0.875rem;
+  color: #555;
+  line-height: 1.55;
+  margin-bottom: 1.5rem;
+  flex: 1;
+  position: relative;
+}
+
+.card__price {
+  font-family: var(--font-display);
+  font-size: 1.1rem;
+  color: #333;
+  margin-bottom: 1.25rem;
+  position: relative;
+}
+
+.card__price span {
+  font-size: 2rem;
+  font-weight: 800;
+  color: var(--black);
+}
+
+.card__btn {
+  position: relative;
+  display: inline-block;
+  padding: 0.7rem 2rem;
+  border: none;
+  border-radius: 2rem;
+  font-family: var(--font-display);
+  font-size: 0.95rem;
+  font-weight: 700;
+  cursor: pointer;
+  transition: filter 0.25s ease, transform 0.2s ease;
+  color: #fff;
+  letter-spacing: 0.02em;
+}
+
+.card__btn:hover { filter: brightness(1.15); transform: scale(1.04); }
+
+/* ── Dragon (фиолетово-розовый) ── */
+.card--dragon .card__glow {
+  background: radial-gradient(circle at 50% 0%, var(--dragon-glow), transparent 70%);
+}
+
+.card--dragon:hover {
+  box-shadow: 0 0 40px 8px var(--dragon-glow), 0 20px 40px rgba(0,0,0,0.1);
+}
+
+.card--dragon .card__title { color: var(--dragon-from); }
+
+.card--dragon .card__btn {
+  background: linear-gradient(135deg, var(--dragon-from), var(--dragon-to));
+}
+
+/* ── Imperator (красно-розовый) ── */
+.card--imperator .card__glow {
+  background: radial-gradient(circle at 50% 0%, var(--imp-glow), transparent 70%);
+}
+
+.card--imperator:hover {
+  box-shadow: 0 0 40px 8px var(--imp-glow), 0 20px 40px rgba(0,0,0,0.1);
+}
+
+.card--imperator .card__title { color: var(--imp-from); }
+
+.card--imperator .card__btn {
+  background: linear-gradient(135deg, var(--imp-from), var(--imp-to));
+}
+
+/* Плашка «Лучший выбор» */
+.card__badge {
+  position: absolute;
+  top: -1px;
+  left: 50%;
+  transform: translateX(-50%);
+  background: linear-gradient(90deg, var(--imp-from), var(--imp-to));
+  color: #fff;
+  font-family: var(--font-display);
+  font-size: 0.75rem;
+  font-weight: 700;
+  letter-spacing: 0.05em;
+  padding: 0.35rem 1.2rem;
+  border-radius: 0 0 1rem 1rem;
+  white-space: nowrap;
+  /* Неоновое свечение плашки */
+  box-shadow: 0 0 14px 3px var(--imp-glow);
+  animation: badgePulse 2.4s ease-in-out infinite;
+  z-index: 2;
+}
+
+@keyframes badgePulse {
+  0%, 100% { box-shadow: 0 0 14px 3px var(--imp-glow); }
+  50%       { box-shadow: 0 0 26px 8px var(--imp-glow); }
+}
+
+/* Отступ для карточки с плашкой */
+.card--featured { padding-top: 3rem; }
+
+/* ── Lord (золотисто-белый) ── */
+.card--lord .card__glow {
+  background: radial-gradient(circle at 50% 0%, var(--lord-glow), transparent 70%);
+}
+
+.card--lord:hover {
+  box-shadow: 0 0 40px 8px var(--lord-glow), 0 20px 40px rgba(0,0,0,0.08);
+}
+
+.card--lord .card__title { color: var(--lord-from); }
+
+.card--lord .card__btn {
+  background: linear-gradient(135deg, var(--lord-from), var(--lord-to));
+  color: #3a2e00;
+}
+
+/* ── Miner (сине-голубой) ── */
+.card--miner .card__glow {
+  background: radial-gradient(circle at 50% 0%, var(--miner-glow), transparent 70%);
+}
+
+.card--miner:hover {
+  box-shadow: 0 0 40px 8px var(--miner-glow), 0 20px 40px rgba(0,0,0,0.1);
+}
+
+.card--miner .card__title { color: var(--miner-from); }
+
+.card--miner .card__btn {
+  background: linear-gradient(135deg, var(--miner-from), var(--miner-to));
+}
+
+/* ═══════════════════════════════════════════
+   ФУТЕР
+═══════════════════════════════════════════ */
+.footer {
+  background: #f5f5f5;
+  border-top: 1px solid #e0e0e0;
+  padding: 1.5rem;
+}
+
+.footer__inner {
+  max-width: 1120px;
+  margin: 0 auto;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  gap: 2rem;
+  flex-wrap: wrap;
+}
+
+.footer__email {
+  font-family: var(--font-display);
+  font-size: 0.95rem;
+  color: #333;
+  text-decoration: none;
+  font-weight: 600;
+  transition: color 0.2s;
+}
+
+.footer__email:hover { color: var(--black); }
+
+.footer__copy {
+  font-size: 0.85rem;
+  color: #999;
+  margin-left: auto;
+}
+
+/* ═══════════════════════════════════════════
+   МОДАЛЬНОЕ ОКНО
+═══════════════════════════════════════════ */
+.modal-overlay {
+  position: fixed;
+  inset: 0;
+  background: rgba(0, 0, 0, 0.65);
+  backdrop-filter: blur(6px);
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  z-index: 1000;
+  padding: 1rem;
+  opacity: 0;
+  pointer-events: none;
+  transition: opacity 0.3s ease;
+}
+
+.modal-overlay.active {
+  opacity: 1;
+  pointer-events: all;
+}
+
+.modal {
+  background: #fff;
+  border-radius: 1.5rem;
+  padding: 2.5rem 2rem;
+  max-width: 440px;
+  width: 100%;
+  position: relative;
+  transform: translateY(24px) scale(0.96);
+  transition: transform 0.35s cubic-bezier(0.34, 1.56, 0.64, 1);
+  box-shadow: 0 30px 80px rgba(0,0,0,0.3);
+}
+
+.modal-overlay.active .modal {
+  transform: translateY(0) scale(1);
+}
+
+.modal__close {
+  position: absolute;
+  top: 1.25rem;
+  right: 1.25rem;
+  background: none;
+  border: none;
+  font-size: 1.2rem;
+  cursor: pointer;
+  color: #aaa;
+  transition: color 0.2s, transform 0.2s;
+  line-height: 1;
+  padding: 0.25rem;
+}
+
+.modal__close:hover { color: #333; transform: rotate(90deg); }
+
+.modal__header {
+  text-align: center;
+  margin-bottom: 1.75rem;
+}
+
+.modal__icon { font-size: 3rem; }
+
+.modal__title {
+  font-family: var(--font-display);
+  font-size: 1.6rem;
+  font-weight: 800;
+  color: var(--black);
+  margin-top: 0.5rem;
+}
+
+.modal__price {
+  color: #666;
+  font-size: 0.95rem;
+  margin-top: 0.25rem;
+}
+
+.modal__price strong {
+  color: var(--black);
+  font-size: 1.1rem;
+}
+
+.modal__field {
+  margin-bottom: 1.1rem;
+}
+
+.modal__field label {
+  display: block;
+  font-size: 0.85rem;
+  font-weight: 600;
+  color: #444;
+  margin-bottom: 0.4rem;
+  text-transform: uppercase;
+  letter-spacing: 0.05em;
+}
+
+.modal__field input {
+  width: 100%;
+  padding: 0.75rem 1rem;
+  border: 2px solid #e5e5e5;
+  border-radius: 0.75rem;
+  font-family: var(--font-body);
+  font-size: 1rem;
+  color: var(--black);
+  outline: none;
+  transition: border-color 0.25s, box-shadow 0.25s;
+  background: #fafafa;
+}
+
+.modal__field input:focus {
+  border-color: #888;
+  box-shadow: 0 0 0 3px rgba(0,0,0,0.06);
+  background: #fff;
+}
+
+.modal__field input.error { border-color: #e8315b; }
+
+.modal__error {
+  display: block;
+  font-size: 0.78rem;
+  color: #e8315b;
+  margin-top: 0.3rem;
+  min-height: 1rem;
+}
+
+/* Методы оплаты */
+.modal__methods {
+  display: flex;
+  gap: 0.5rem;
+  justify-content: center;
+  flex-wrap: wrap;
+  margin: 1.25rem 0;
+  font-size: 0.8rem;
+  color: #777;
+}
+
+.modal__methods span {
+  background: #f2f2f2;
+  border-radius: 0.5rem;
+  padding: 0.3rem 0.65rem;
+}
+
+/* Кнопка «Оплатить» */
+.modal__pay-btn {
+  width: 100%;
+  padding: 1rem;
+  background: var(--black);
+  color: var(--white);
+  border: none;
+  border-radius: 0.875rem;
+  font-family: var(--font-display);
+  font-size: 1rem;
+  font-weight: 700;
+  cursor: pointer;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  gap: 0.75rem;
+  transition: background 0.25s, transform 0.2s;
+  margin-top: 0.5rem;
+}
+
+.modal__pay-btn:hover:not(:disabled) {
+  background: #222;
+  transform: scale(1.02);
+}
+
+.modal__pay-btn:disabled { opacity: 0.6; cursor: not-allowed; }
+
+/* Спиннер загрузки */
+.spinner {
+  width: 1rem;
+  height: 1rem;
+  border: 2px solid rgba(255,255,255,0.3);
+  border-top-color: #fff;
+  border-radius: 50%;
+  animation: spin 0.7s linear infinite;
+}
+
+.spinner.hidden { display: none; }
+
+@keyframes spin {
+  to { transform: rotate(360deg); }
+}
+
+/* ═══════════════════════════════════════════
+   УТИЛИТЫ
+═══════════════════════════════════════════ */
+.hidden { display: none !important; }
+
+/* ═══════════════════════════════════════════
+   АДАПТИВ
+═══════════════════════════════════════════ */
+@media (max-width: 600px) {
+  .cards { grid-template-columns: 1fr; }
+  .footer__inner { flex-direction: column; gap: 0.5rem; }
+  .footer__copy { margin-left: 0; }
+  .modal { padding: 2rem 1.25rem; }
+}
+
+@media (prefers-reduced-motion: reduce) {
+  *, *::before, *::after {
+    animation-duration: 0.01ms !important;
+    transition-duration: 0.01ms !important;
+  }
+}
 
