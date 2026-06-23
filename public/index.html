@@ -1,0 +1,152 @@
+<!DOCTYPE html>
+<html lang="ru">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>ExcellentWorld — Лучший Minecraft сервер</title>
+  <meta name="description" content="ExcellentWorld — лучший Minecraft сервер. IP: mc.excellentworld.xyz" />
+
+  <!-- Google Fonts: Space Grotesk (дисплей) + Inter (тело) -->
+  <link rel="preconnect" href="https://fonts.googleapis.com" />
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
+  <link href="https://fonts.googleapis.com/css2?family=Space+Grotesk:wght@400;600;700;800&family=Inter:wght@400;500;600&display=swap" rel="stylesheet" />
+
+  <link rel="stylesheet" href="css/style.css" />
+</head>
+<body>
+
+  <!-- ═══════════════════════════════════════════
+       СЕКЦИЯ 1 — ГЛАВНЫЙ ЭКРАН
+  ═══════════════════════════════════════════ -->
+  <section class="hero" id="hero">
+    <div class="hero__content">
+      <!-- При ховере текст плавно меняется на IP через CSS + JS -->
+      <h1 class="hero__title" id="heroTitle" data-default="ExcellentWorld" data-hover="mc.excellentworld.xyz">
+        <span class="hero__title-text">ExcellentWorld</span>
+      </h1>
+      <p class="hero__sub">Лучшего сервера нету</p>
+
+      <!-- Подсказка «наведи» — исчезает при первом ховере -->
+      <span class="hero__hint" id="heroHint">— наведи курсор —</span>
+    </div>
+
+    <!-- Стрелка вниз — анимированная -->
+    <div class="hero__scroll-arrow" id="scrollArrow">
+      <svg viewBox="0 0 24 24" fill="none" xmlns="http://www.w3.org/2000/svg">
+        <path d="M12 5v14M5 12l7 7 7-7" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/>
+      </svg>
+    </div>
+  </section>
+
+  <!-- ═══════════════════════════════════════════
+       СЕКЦИЯ 2 — ДОНАТ
+  ═══════════════════════════════════════════ -->
+  <section class="donate" id="donate">
+    <div class="donate__inner">
+      <h2 class="donate__heading">Поддержи сервер</h2>
+      <p class="donate__sub">Получи привилегии и помоги нам расти</p>
+
+      <div class="cards">
+
+        <!-- Dragon -->
+        <article class="card card--dragon" data-donate="Dragon" data-price="1490">
+          <div class="card__glow"></div>
+          <div class="card__icon">🐉</div>
+          <h3 class="card__title">Dragon</h3>
+          <p class="card__desc">Максимальные привилегии. Полный доступ ко всем возможностям сервера.</p>
+          <div class="card__price"><span>1 490</span> ₽</div>
+          <button class="card__btn" onclick="openModal('Dragon', 1490)">Купить</button>
+        </article>
+
+        <!-- Imperator — «Лучший выбор» -->
+        <article class="card card--imperator card--featured" data-donate="Imperator" data-price="990">
+          <div class="card__badge">⭐ Лучший выбор!</div>
+          <div class="card__glow"></div>
+          <div class="card__icon">👑</div>
+          <h3 class="card__title">Imperator</h3>
+          <p class="card__desc">Расширенные права, VIP-зоны и эксклюзивные команды для настоящих правителей.</p>
+          <div class="card__price"><span>990</span> ₽</div>
+          <button class="card__btn" onclick="openModal('Imperator', 990)">Купить</button>
+        </article>
+
+        <!-- Lord -->
+        <article class="card card--lord" data-donate="Lord" data-price="590">
+          <div class="card__glow"></div>
+          <div class="card__icon">🏆</div>
+          <h3 class="card__title">Lord</h3>
+          <p class="card__desc">Золотой статус. Уникальные возможности и особые права на сервере.</p>
+          <div class="card__price"><span>590</span> ₽</div>
+          <button class="card__btn" onclick="openModal('Lord', 590)">Купить</button>
+        </article>
+
+        <!-- Miner -->
+        <article class="card card--miner" data-donate="Miner" data-price="290">
+          <div class="card__glow"></div>
+          <div class="card__icon">⛏️</div>
+          <h3 class="card__title">Miner</h3>
+          <p class="card__desc">Старт в мире привилегий. Полезные бонусы для новых игроков.</p>
+          <div class="card__price"><span>290</span> ₽</div>
+          <button class="card__btn" onclick="openModal('Miner', 290)">Купить</button>
+        </article>
+
+      </div><!-- /cards -->
+    </div>
+  </section>
+
+  <!-- ═══════════════════════════════════════════
+       ФУТЕР
+  ═══════════════════════════════════════════ -->
+  <footer class="footer">
+    <div class="footer__inner">
+      <a class="footer__email" href="mailto:kxjdjddnnddjjd@gmail.com">kxjdjddnnddjjd@gmail.com</a>
+      <span class="footer__copy">© All rights reserved</span>
+    </div>
+  </footer>
+
+  <!-- ═══════════════════════════════════════════
+       МОДАЛЬНОЕ ОКНО ПОКУПКИ
+  ═══════════════════════════════════════════ -->
+  <div class="modal-overlay" id="modalOverlay" onclick="closeModalOutside(event)">
+    <div class="modal" id="modal" role="dialog" aria-modal="true" aria-labelledby="modalTitle">
+
+      <button class="modal__close" onclick="closeModal()" aria-label="Закрыть">✕</button>
+
+      <div class="modal__header">
+        <span class="modal__icon" id="modalIcon">🎁</span>
+        <h2 class="modal__title" id="modalTitle">Донат <span id="modalDonateName"></span></h2>
+        <p class="modal__price">Стоимость: <strong id="modalPrice"></strong> ₽</p>
+      </div>
+
+      <div class="modal__body">
+        <div class="modal__field">
+          <label for="nickInput">Ник в Minecraft</label>
+          <input type="text" id="nickInput" placeholder="Твой ник..." maxlength="16" autocomplete="off" />
+          <span class="modal__error" id="nickError"></span>
+        </div>
+
+        <div class="modal__field">
+          <label for="emailInput">Email для чека</label>
+          <input type="email" id="emailInput" placeholder="example@mail.com" autocomplete="email" />
+          <span class="modal__error" id="emailError"></span>
+        </div>
+
+        <!-- Индикаторы методов оплаты -->
+        <div class="modal__methods">
+          <span title="Банковская карта">💳 Карта</span>
+          <span title="Система быстрых платежей">⚡ СБП</span>
+          <span title="Google Pay">🔵 Google Pay</span>
+          <span title="QIWI">🥝 QIWI</span>
+        </div>
+
+        <button class="modal__pay-btn" id="payBtn" onclick="submitPayment()">
+          <span id="payBtnText">Перейти к оплате</span>
+          <span id="payBtnSpinner" class="spinner hidden"></span>
+        </button>
+      </div>
+
+    </div>
+  </div>
+
+  <script src="js/main.js"></script>
+</body>
+</html>
